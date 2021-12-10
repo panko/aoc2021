@@ -7,7 +7,8 @@ struct Board {
     cols: usize,
     rows: usize,
     data: Vec<u32>,
-    marked_mask: Vec<bool>
+    marked_mask: Vec<bool>,
+    won: bool
 }
 
 impl Board {
@@ -17,6 +18,7 @@ impl Board {
             rows: 5,
             data: vec![0; 25],
             marked_mask: vec![false; 25],
+            won: false
         }
     }
     fn set_data(&mut self, data: Vec<u32>) { //cols: u8, rows: u8) -> Board {
@@ -128,12 +130,16 @@ fn main() {
     println!("boards: {:?}", boards);
 
     for draw in draws {
+
         for board in &mut boards {
+            if board.won {
+                continue
+            }
              board.mark_draw(draw);
              if board.check_win() {
-                let sum = board.sum_unmarked();
-                println!("res: {:?}", draw * sum);
-                process::exit(0);
+                println!("won {:?}", board);
+                board.won = true;
+                println!("sum {:?}", board.sum_unmarked() * draw);
              }
         }
     }
